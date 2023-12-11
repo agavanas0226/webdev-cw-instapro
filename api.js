@@ -1,6 +1,7 @@
 // Замени на свой, чтобы получить независимый от других набор данных.
 // "боевая" версия инстапро лежит в ключе prod
 import { renderApp, setPosts } from "./index.js";
+import { replaceSave } from "./helpers.js";
 const personalKey = "kolesnikova-anastasia";
 const baseHost = " https://webdev-api.sky.pro";
 const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
@@ -46,11 +47,7 @@ export function addPost({ token, imageUrl }) {
   return fetch(postsHost, {
       method: 'POST',
       body: JSON.stringify({
-          description: commentInputElement.value
-              .replaceAll('&', '&amp;')
-              .replaceAll('<', '&lt;')
-              .replaceAll('>', '&gt;')
-              .replaceAll('"', '&quot;'),
+        description: commentInputElement.value,
           imageUrl,
       }),
       headers: {

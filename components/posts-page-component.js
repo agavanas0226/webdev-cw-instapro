@@ -4,6 +4,7 @@ import { posts, goToPage, getToken, page, renderApp, setPosts } from "../index.j
 import { getPosts, addLikePost, removeLikePost } from "../api.js";
 import { formatDistance } from 'date-fns'
 import { ru } from 'date-fns/locale'
+import { replaceSave } from "../helpers.js";
 export function renderPostsPageComponent({ appEl }) {
   // TODO: реализовать рендер постов из api
   console.log("Актуальный список постов:", posts);
@@ -14,9 +15,9 @@ export function renderPostsPageComponent({ appEl }) {
 			  postId: postItem.id,
 		      postImageUrl: postItem.imageUrl,
 			  postCreatedAt: formatDistance(new Date(postItem.createdAt), new Date, { locale: ru }),
-			  description: postItem.description,
+			  description: replaceSave(postItem.description),
 			  userId: postItem.user.id,
-			  userName: postItem.user.name,
+			  userName: replaceSave(postItem.user.name),
 			  userLogin: postItem.user.login,
 			  postImageUserUrl: postItem.user.imageUrl,
 			  usersLikes: postItem.likes,
@@ -105,48 +106,20 @@ export function renderPostsPageComponent({ appEl }) {
 			  event.stopPropagation()
 			  const postId = likeButton.dataset.postId
 			  const index = likeButton.dataset.index
-			  const postHeader = document.querySelector('.post-header')
-			  const userId = postHeader.dataset.userId
   
 			  if (posts[index].isLiked) {
 				  removeLikePost({ token: getToken(), postId })
-					  .then(() => {
+				  .then((updatedPost) => {
 						  posts[index].isLiked = false
-					  })
-					  .then(() => {
-						  getPosts({ token: getToken(), userId }).then(
-							  (response) => {
-								  if (page === USER_POSTS_PAGE) {
-									  setPosts(response)
-									  goToPage(USER_POSTS_PAGE, {
-										  userId,
-									  })
-								  } else {
-									  setPosts(response)
-									  renderApp()
-								  }
-							  },
-						  )
+						  posts[index].likes = updatedPost.post.likes;						
+						  renderApp();
 					  })
 			  } else {
 				  addLikePost({ token: getToken(), postId })
-					  .then(() => {
+				  .then((updatedPost) => {
 						  posts[index].isLiked = true
-					  })
-					  .then(() => {
-						  getPosts({ token: getToken(), userId }).then(
-							  (response) => {
-								  if (page === USER_POSTS_PAGE) {
-									  setPosts(response)
-									  goToPage(USER_POSTS_PAGE, {
-										  userId,
-									  })
-								  } else {
-									  setPosts(response)
-									  renderApp()
-								  }
-							  },
-						  )
+						  posts[index].likes = updatedPost.post.likes;
+						  renderApp();
 					  })
 			  }
 		  })
@@ -161,48 +134,20 @@ export function renderPostsPageComponent({ appEl }) {
 			  event.stopPropagation()
 			  const postId = likeButton.dataset.postId
 			  const index = likeButton.dataset.index
-			  const postHeader = document.querySelector('.post-header')
-			  const userId = postHeader.dataset.userId
   
 			  if (posts[index].isLiked) {
 				  removeLikePost({ token: getToken(), postId })
-					  .then(() => {
+				  .then((updatedPost) => {
 						  posts[index].isLiked = false
-					  })
-					  .then(() => {
-						  getPosts({ token: getToken(), userId }).then(
-							  (response) => {
-								  if (page === USER_POSTS_PAGE) {
-									  setPosts(response)
-									  goToPage(USER_POSTS_PAGE, {
-										  userId,
-									  })
-								  } else {
-									  setPosts(response)
-									  renderApp()
-								  }
-							  },
-						  )
+						  posts[index].likes = updatedPost.post.likes;
+						  renderApp();
 					  })
 			  } else {
 				  addLikePost({ token: getToken(), postId })
-					  .then(() => {
+				  .then((updatedPost) => {
 						  posts[index].isLiked = true
-					  })
-					  .then(() => {
-						  getPosts({ token: getToken(), userId }).then(
-							  (response) => {
-								  if (page === USER_POSTS_PAGE) {
-									  setPosts(response)
-									  goToPage(USER_POSTS_PAGE, {
-										  userId,
-									  })
-								  } else {
-									  setPosts(response)
-									  renderApp()
-								  }
-							  },
-						  )
+						  posts[index].likes = updatedPost.post.likes;
+						  renderApp();
 					  })
 			  }
 		  })
